@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        *{margin:0; padding:0;}
+        body{width:100%; height:100%; overflow:hidden;}
+        #canvas{background:url(./images/img_01.gif) no-repeat center center; background-size:100% 100%;}
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="500">
+    您的浏览器不支持canvas
+</canvas>
+<script>
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+
+    //适配宽高
+    var pc_width = document.body.clientWidth , pc_height = window.screen.height-60;
+    canvas.setAttribute('width',pc_width);
+    canvas.setAttribute('height',pc_height);
+    canvas.style.backgroundSize = pc_width + "px " + pc_height + "px";
+
+    var x = canvas.width/2;
+    var y = canvas.height/4*3;
+    var radius = canvas.width/3;
+    var time = 3000;    //绘制时间，每1000表示1秒
+    var a = 1;    //绘制的弧度
+    var color = ["#f93e26","#f99d23","#f9f924","#73c32a","#39d0c1","#3b7e8e","#884968"];
+    //线条宽度
+    var lineWidth = canvas.width/120;
+
+    //绘制小人和云彩
+    var img_1 = new Image();
+    var img_2 = new Image();
+    img_1.src = "./images/img_02.png";
+    img_2.src = "./images/img_03.png";
+    img_1.onload = function(){
+        context.drawImage(img_1,canvas.width/9,canvas.height/2,canvas.width/8,canvas.height/4);
+        context.globalCompositeOperation = "destination-over";    //混合模式
+    };
+    img_2.onload = function(){
+        context.drawImage(img_2,canvas.width/1.5,canvas.height/3,canvas.width/7,canvas.height/10);
+        context.globalCompositeOperation = "destination-over";
+    };
+
+    function action(){
+        for(var i=0;i<7;i++){
+            context.strokeStyle = color[i];
+            context.lineWidth = lineWidth;
+            context.beginPath();
+            context.arc(x,y,radius-(lineWidth*i),Math.PI,a*Math.PI);
+            context.stroke();
+        }
+    }
+
+    var t = setInterval(function(){
+        if(a < 2){
+            a = a+0.01;
+            action();
+        }else if(a >= 2){
+            clearInterval(t);
+        }
+    },time/100);
+
+</script>
+</body>
+</html>
